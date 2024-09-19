@@ -6,6 +6,7 @@ import smtplib
 import logging
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
@@ -18,7 +19,7 @@ def send_email(subject, to_email, context, template_name='email_templates.html')
     from_email = settings.EMAIL_HOST_USER
     email_message = EmailMessage(
         subject,
-        plain_message,
+        html_message,  
         from_email,
         [to_email]
     )
@@ -32,11 +33,10 @@ def send_email(subject, to_email, context, template_name='email_templates.html')
         return False
 
 def generate_confirmation_link(user, request):
-    uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
-    return request.build_absolute_uri(
-        reverse('confirm_email', kwargs={'uidb64': uidb64, 'token': token})
-    )
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    confirmation_url = reverse('confirm_registration', kwargs={'uidb64': uid, 'token': token})
+    return request.build_absolute_uri(confirmation_url)
 
 
 

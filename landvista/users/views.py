@@ -91,3 +91,18 @@ def add_user(request):
     else:
         form = UserCreationForm()
     return render(request, 'users/email_templates.html', {'form': form})
+def confirm_registration_view(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True  
+        user.save()
+        messages.success(request, 'Your email has been confirmed. You can now log in.')
+        return redirect('login') 
+    else:
+        messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
+        return redirect('home')  
