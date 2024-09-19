@@ -98,7 +98,8 @@ def register(request):
         else:
             messages.error(request, "User already exists.")
             return redirect("login")
-    return render(request, "authentication/register.html", {"user_info": user_info})
+    return render(request, "authentication/", {"user_info": user_info})
+
 def logout(request):
     request.session.clear()
     return redirect(
