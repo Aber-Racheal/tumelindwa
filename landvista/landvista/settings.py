@@ -28,6 +28,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+
+from decouple import config
+
+GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY')
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'location',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +131,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
