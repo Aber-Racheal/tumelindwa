@@ -12,12 +12,15 @@ db.sqlite3
 .venv/
 venv/
 env/
+
 # IDE and editor settings
 .vscode/
 .idea/ *
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
 #System Files
 .DS_Store
 Thumbs.db
