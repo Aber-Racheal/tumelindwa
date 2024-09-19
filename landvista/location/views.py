@@ -4,7 +4,7 @@ from rest_framework import status
 from .models import Location
 from .serializers import LocationSerializer
 import requests
-from django.conf import settings
+import os
 
 class SearchView(APIView):
     def post(self, request):
@@ -20,7 +20,10 @@ class SearchView(APIView):
             serializer = LocationSerializer(existing_location)
             return Response(serializer.data)
 
-        api_key = settings.GOOGLE_MAPS_API_KEY
+        api_key = os.getenv('AIzaSyBBYsZVdFOBv3is6gNS3SbHr_xWY4pkpV8')
+        if not api_key:
+            return Response({'error': 'Google Maps API key is not set'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         url = f'https://maps.googleapis.com/maps/api/geocode/json?address={location_name}&key={api_key}'
         response = requests.get(url)
         data = response.json()
