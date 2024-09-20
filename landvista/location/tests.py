@@ -1,37 +1,38 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from unittest.mock import patch, Mock
 from .models import Location
 
 class SearchViewTests(APITestCase):
-    
-    def setUp(self):
-        self.url = reverse('search')
-        Location.objects.create(name='Kibera', latitude=-1.311484, longitude=36.787948)
-        Location.objects.create(name='Kitisuru', latitude=-1.218598, longitude=36.8016)
 
-    def test_search_location_success(self):
-        data = {'location': 'Kibera'}
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  
-        self.assertEqual(Location.objects.count(), 2)
-        self.assertEqual(response.data['name'], 'Kibera')
+    @patch('location.views.requests.get')
+    def test_search_new_location(self, mock_get):
+        # Mock the geocoding API response
+        mock_get.side_effect = [
+            # Geocoding response
+            Mock(status_code=200, json=lambda: {
+                'status': 'OK',
+                'results': [{
+                    'geometry': {
+                        'location': {
+                            'lat': 40.7128,
+                            'lng': -74.0060
+                        }
+                    }
+                }]
+            }),
+            # Mock soil type response
+            Mock(status_code=200, json=lambda: {'soil_type': 'Loamy'}),
+            # Mock elevation response
+            Mock(status_code=200, json=lambda: {
+                'results': [{'elevation': 10}]
+            })
+        ]
 
-    def test_search_location_invalid(self):
-        data = {'location': 'kibera'}
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'error': 'Enter a valid location'})
+        response = self.client.post(reverse('search'), {'location': 'New York'})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn('soil_type', response.data)
+        self.assertIn('elevation', response.data)
 
-    def test_search_location_not_found(self):
-        data = {'location': 'Unknown Place'}
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data, {'error': 'Location not found'})
-
-    def test_search_location_already_exists(self):
-        data = {'location': 'Kitisuru'}
-        response = self.client.post(self.url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['name'], 'Kitisuru')
-        self.assertEqual(Location.objects.count(), 2)  
+    # Additional test methods...

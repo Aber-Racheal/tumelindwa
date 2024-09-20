@@ -4,7 +4,7 @@ It maps URL patterns to view functions or classes to handle HTTP requests.
 
 
 from django.urls import path
-from .views import QuestionListView, FeedbackListView, QuestionResponseView, AllQuestionsResponseView
+from .views import QuestionListView, QuestionResponseView, AllQuestionsResponseView, FeedbackListView
 
 urlpatterns = [
     path('questions/', QuestionListView.as_view(), name='question-list'),
