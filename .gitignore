@@ -9,3 +9,4 @@ __pycache__/
 media
 *.pyc
 **/__pycache__/
+__pycache__
