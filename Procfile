@@ -1,0 +1,1 @@
+web: gunicorn landvista.wsgi --log-file -
