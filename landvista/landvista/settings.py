@@ -32,6 +32,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+
+from decouple import config
+
+GOOGLE_MAPS_API_KEY = config('GOOGLE_MAPS_API_KEY')
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,8 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'location',
     'users',
     'authentication',
+    'feedback',
+
 ]
 
 MIDDLEWARE = [
@@ -140,6 +151,7 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
 
 
 

@@ -31,6 +31,8 @@ oauth.register(
     },
     server_metadata_url=f"https://{settings.AUTH0_DOMAIN}/.well-known/openid-configuration",
 )
+
+
 def login(request):
     """
     This is for handling login requests, including account activation if needed
@@ -60,6 +62,8 @@ def login(request):
     return oauth.auth0.authorize_redirect(
         request, request.build_absolute_uri(reverse("callback") + f"?next={next_url}")
     )
+
+
 def callback(request):
     """
     This is to handle the callback from Auth0
@@ -112,6 +116,8 @@ def logout(request):
             quote_via=quote_plus,
         ),
     )
+
+
 def index(request):
     return render(
         request,
@@ -136,6 +142,8 @@ def confirm_registration(request, uidb64, token):
     else:
         messages.error(request, 'The confirmation link is invalid or has expired.')
         return redirect('index')
+    
+
 def send_confirmation_email(request, user):
     confirmation_link=generate_confirmation_link(user,request)
     subject='confirm Your Registration'
@@ -160,6 +168,8 @@ def send_confirmation_email(request, user):
         logging.error(f"Failed to send confirmation email to {user.email}")
 
 User = get_user_model()
+
+
 
 def confirm_email(request, uidb64, token):
     try:
