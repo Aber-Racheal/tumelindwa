@@ -8,11 +8,6 @@ load_dotenv(find_dotenv())
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-=ao5v!so%6#%d@uncrf%uze@qpa1!frn6j&g)*^ix-5nonac=7'
-GOOGLE_MAPS_API_KEY= 'AIzaSyBBYsZVdFOBv3is6gNS3SbHr_xWY4pkpV8'
-EMAIL_HOST_USER= 'kishyalandvista@gmail.com'
-EMAIL_HOST_PASSWORD= 'aeaf zlwy nefs oexy'
-
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
