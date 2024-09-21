@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-=ao5v!so%6#%d@uncrf%uze@qpa1!frn6j&g)*^ix-5nonac=7'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+GOOGLE_MAPS_API_KEY= 'AIzaSyBBYsZVdFOBv3is6gNS3SbHr_xWY4pkpV8'
 
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
@@ -105,7 +105,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles/", '')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles/")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -116,6 +116,7 @@ AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET", '')
 REDIRECT_URI = os.environ.get("REDIRECT_URI", '')
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", '')
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", '')
+
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
