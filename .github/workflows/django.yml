@@ -10,7 +10,6 @@ on:
     branches: 
       - dev
       - staging
-      - main
 
 jobs:
   test:
@@ -42,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+      - name: Set SECRET_KEY environment variable
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
       - name: Set up Git remote for Heroku
         run: |
           git remote -v
