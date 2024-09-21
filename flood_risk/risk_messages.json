@@ -1,0 +1,29 @@
+{
+    "thresholds": [
+      {
+        "max": 20,
+        "category": "low",
+        "additional_information": "This area has a low risk of flooding. Generally, minimal precautions are required. However, it’s wise to stay informed about local weather conditions and any potential changes in flood risk. For added peace of mind, ensure your property has proper drainage and monitor any updates from local authorities regarding flood risks."
+      },
+      {
+        "max": 40,
+        "category": "moderate",
+        "additional_information": "There is a moderate risk of flooding in this area. It is advisable to take some precautions, such as checking property drainage and being aware of past flood events. Prepare for possible weather changes and stay informed through local news or weather updates. Consider evaluating your property’s vulnerability and any necessary mitigation measures."
+      },
+      {
+        "max": 60,
+        "category": "high",
+        "additional_information": "This area faces a high risk of flooding. It is crucial to take significant precautions. Ensure that your property is equipped with effective flood defenses and regularly review the flood history of your area. Be prepared with an emergency plan and stay vigilant about weather forecasts and any flood warnings issued by local authorities."
+      },
+      {
+        "max": 80,
+        "category": "very_high",
+        "additional_information": "With very high flood risk in this area, urgent precautions are necessary. Evaluate your property’s flood defenses and consider investing in additional measures to protect against flooding. Stay informed about weather conditions and be ready to act quickly if a flood warning is issued. Ensure you have a comprehensive emergency plan and regularly review it."
+      },
+      {
+        "max": 100,
+        "category": "extreme",
+        "additional_information": "The risk of flooding is extremely high in this area. Immediate action is required to protect yourself and your property. Follow any evacuation orders promptly and ensure you have a robust emergency plan in place. Regularly monitor local advisories and weather conditions, and take all necessary steps to safeguard your property from severe flooding."
+      }
+    ]
+}
