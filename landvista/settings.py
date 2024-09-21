@@ -10,6 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-=ao5v!so%6#%d@uncrf%uze@qpa1!frn6j&g)*^ix-5nonac=7'
 GOOGLE_MAPS_API_KEY= 'AIzaSyBBYsZVdFOBv3is6gNS3SbHr_xWY4pkpV8'
+EMAIL_HOST_USER= 'kishyalandvista@gmail.com'
+EMAIL_HOST_PASSWORD= 'aeaf zlwy nefs oexy'
 
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
@@ -116,11 +118,11 @@ AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET", '')
 REDIRECT_URI = os.environ.get("REDIRECT_URI", '')
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", '')
 EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", '')
+EMAIL_HOST_USER= os.environ.get("EMAIL_HOST_USER", '')
+EMAIL_HOST_PASSWORD= os.environ.get("EMAIL_HOST_PASSWORD", '')
 
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
