@@ -30,8 +30,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         email = validated_data['email']
         username = email.split('@')[0]
-        
-        # Ensure username is unique
         counter = 1
         while User.objects.filter(username=username).exists():
             username = f"{email.split('@')[0]}{counter}"
