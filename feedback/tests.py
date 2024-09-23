@@ -42,14 +42,14 @@ class FeedbackViewSetTest(APITestCase):
 
     def test_submit_feedback(self):
         url = reverse('feedback-list')
-        data = {'feedbacks': [{'question_text': 'Is this a test?', 'response': 'yes'}]}
+        data = {'feedback': [{'question_text': 'Is this a test?', 'response': 'yes'}]}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Feedback.objects.count(), 1)
 
     def test_feedback_with_invalid_question(self):
         url = reverse('feedback-list')
-        data = {'feedbacks': [{'question_text': 'Non-existent question?', 'response': 'yes'}]}
+        data = {'feedback': [{'question_text': 'Non-existent question?', 'response': 'yes'}]}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
