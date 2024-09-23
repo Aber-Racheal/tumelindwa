@@ -17,6 +17,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 import smtplib
+from django.db import transaction 
 import logging
 
 def test_view(request):
@@ -25,21 +26,34 @@ def test_view(request):
     View to handle user registration via POST request.
     Handles user creation and sends a confirmation email upon successful registration.
     """
+
+logger = logging.getLogger(__name__)
+
 class UserRegistrationView(APIView):
+    @transaction.atomic
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            subject = 'Welcome to Landvista'
-            confirmation_link = generate_confirmation_link(user, request)
-            context = {
-                'user': user.username,
-                'confirmation_link': confirmation_link,
-            }
-            if send_email(subject,user.email,context,template_name='email_templates.html'):
-               return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-            else:
-                return Response({"message": "Failed to send email"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            try:
+                with transaction.atomic():
+                    user = serializer.save()
+                    subject = 'Welcome to Landvista'
+                    confirmation_link = generate_confirmation_link(user, request)
+                    context = {
+                        'user': user.username,
+                        'confirmation_link': confirmation_link,
+                    }
+                    if send_email(subject, user.email, context, template_name='email_templates.html'):
+                        user.save()
+                        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+                    else:
+                        raise Exception("Failed to send confirmation email")
+                        
+            except Exception as e:
+                logger.error(f"Error during user registration: {str(e)}")
+                return Response({"message": "Failed to register user due to email sending issue"}, 
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class UserDetailView(APIView):
     """
@@ -91,6 +105,7 @@ def add_user(request):
     else:
         form = UserCreationForm()
     return render(request, 'users/email_templates.html', {'form': form})
+    
 def confirm_registration_view(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))

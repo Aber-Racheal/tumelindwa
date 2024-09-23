@@ -37,7 +37,3 @@ def generate_confirmation_link(user, request):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     confirmation_url = reverse('confirm_registration', kwargs={'uidb64': uid, 'token': token})
     return request.build_absolute_uri(confirmation_url)
-
-
-
-

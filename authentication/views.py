@@ -158,7 +158,7 @@ def send_confirmation_email(request, user):
     send_mail(
         subject,
         plain_message,
-       from_email,
+        from_email,
         [to_email],
        html_message=html_message
     )
