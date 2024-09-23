@@ -15,7 +15,7 @@ class Question(models.Model):
         return self.text
 
 class Feedback(models.Model):
-    question = models.ForeignKey(Question, related_name='feedbacks', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='feedback', on_delete=models.CASCADE)
     response = models.CharField(max_length=3, choices=[('yes', 'Yes'), ('no', 'No')])
 
     def __str__(self):
