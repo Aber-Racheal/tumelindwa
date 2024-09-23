@@ -42,7 +42,7 @@ class FeedbackListView(views.APIView):
         feedback_list = request.data.get('feedbacks', [])
         
         if not isinstance(feedback_list, list):
-            return Response({'error': 'Invalid data format, expect              ed a list under the key "feedbacks"'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid data format, expected a list under the key "feedbacks"'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = FeedbackSerializer(data=feedback_list, many=True)
         if serializer.is_valid():
