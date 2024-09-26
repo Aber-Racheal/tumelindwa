@@ -67,6 +67,7 @@ class UserDetailView(APIView):
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserRegistrationSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
     def put(self, request, userId):
         try:
             user = User.objects.get(id=userId)

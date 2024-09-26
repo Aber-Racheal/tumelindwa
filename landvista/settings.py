@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'corsheaders',
     'flood_risk',
+    'metrics',
 ]
 
 MIDDLEWARE = [
