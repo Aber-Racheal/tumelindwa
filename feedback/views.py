@@ -36,19 +36,30 @@ class QuestionListView(views.APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, format=None):
+        question_id = request.data.get('id')
+        try:
+            question = Question.objects.get(id=question_id)
+            question.delete()
+            return Response({'message': 'Question deleted successfully'}, status=status.HTTP_200_OK)
+        except Question.DoesNotExist:
+            return Response({'error': 'Question not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class FeedbackListView(views.APIView):
     def post(self, request, format=None):
-        feedback_list = request.data.get('feedbacks', [])
+        feedback_list = request.data.get('feedback', [])
         
         if not isinstance(feedback_list, list):
-            return Response({'error': 'Invalid data format, expect              ed a list under the key "feedbacks"'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid data format, expected a list under the key "feedback"'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = FeedbackSerializer(data=feedback_list, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Feedback submitted'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class QuestionResponseView(views.APIView):
     def get(self, request, question_id, format=None):
         try:
@@ -56,8 +67,10 @@ class QuestionResponseView(views.APIView):
         except Question.DoesNotExist:
             return Response({'error': 'Question not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        # Count responses directly linked to the question object
         positive = Feedback.objects.filter(question=question, response='yes').count()
         negative = Feedback.objects.filter(question=question, response='no').count()
+
         response_counts = {
             'question_id': question.id,
             'question_text': question.text,
@@ -66,11 +79,13 @@ class QuestionResponseView(views.APIView):
         }
         return Response(response_counts, status=status.HTTP_200_OK)
 
+        
 class AllQuestionsResponseView(views.APIView):
     def get(self, request, format=None):
         questions = Question.objects.all()
         response_counts = {}
         for question in questions:
+            # Count responses for each question by checking the correct association
             positive = Feedback.objects.filter(question=question, response='yes').count()
             negative = Feedback.objects.filter(question=question, response='no').count()
             response_counts[question.id] = {
