@@ -1,15 +1,3 @@
-'''
-This file contains serializers for the Question and Feedback models.
-Serializers are used to convert complex data types, such as Django models, into native Python data types that can then be easily rendered into JSON or other content types.
-
-The serializers also handle validation and transformation of incoming data.
-
-This file:
-   Sets up logging
-   Has a Write-only field for the text of the question
-   Has a Read-only field for the related question object
-'''
-
 from rest_framework import serializers
 from .models import Question, Feedback
 
@@ -20,7 +8,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class FeedbackSerializer(serializers.ModelSerializer):
     question_text = serializers.CharField(write_only=True)
-    question = QuestionSerializer(read_only=True)
+    question = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), required=False)  # Updated to allow setting question directly
 
     class Meta:
         model = Feedback
@@ -28,12 +16,21 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         question_text = data.get('question_text')
-        if not Question.objects.filter(text=question_text).exists():
+        
+        # Ensure the question exists based on question_text
+        question = Question.objects.filter(text=question_text).first()
+        if not question:
             raise serializers.ValidationError({"question_text": "Question with this text does not exist"})
+
+        # Validate the response
+        response = data.get('response').lower()
+        if response not in ['yes', 'no']:
+            raise serializers.ValidationError({"response": "Response must be either 'yes' or 'no'"})
+
+        # Set the question in validated data
+        data['question'] = question
         return data
 
     def create(self, validated_data):
-        question_text = validated_data.pop('question_text')
-        question = Question.objects.get(text=question_text)
-        validated_data['question'] = question
+        validated_data.pop('question_text', None)  # Remove question_text since we already set question
         return super().create(validated_data)
