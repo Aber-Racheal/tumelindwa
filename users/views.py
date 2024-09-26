@@ -30,6 +30,15 @@ def test_view(request):
 logger = logging.getLogger(__name__)
 
 class UserRegistrationView(APIView):
+    """Retrieve a list of all users"""
+
+    def get (self, request):
+        users = User.objects.all()
+        total_users = User.objects.all().count()
+        serializer = UserRegistrationSerializer(users, many= True)
+        return Response({"total_users": total_users,
+                         "users": serializer.data})
+
     @transaction.atomic
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
@@ -56,14 +65,7 @@ class UserRegistrationView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class UserListView(APIView):
-    """Retrieve a list of all users"""
-    def get (self, request):
-        users = User.objects.all()
-        total_users = User.objects.all().count()
-        serializer = UserRegistrationSerializer(users, many= True)
-        return Response({"total_users": total_users,
-                         "users": serializer.data})
+   
 class UserDetailView(APIView):
     """
     View to retrieve, update, or delete a user by their ID.
