@@ -55,6 +55,15 @@ class UserRegistrationView(APIView):
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserListView(APIView):
+    """Retrieve a list of all users"""
+    def get (self, request):
+        users = User.objects.all()
+        total_users = User.objects.all().count()
+        serializer = UserRegistrationSerializer(users, many= True)
+        return Response({"total_users": total_users,
+                         "users": serializer.data})
 class UserDetailView(APIView):
     """
     View to retrieve, update, or delete a user by their ID.
