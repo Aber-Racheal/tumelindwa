@@ -24,6 +24,5 @@ urlpatterns = [
     path('auth/', include ('authentication.urls')),
     path('api/', include('flood_risk.urls')),
     path('api/', include('users.urls')),
-    path('metrics/', include('metrics.urls')),
-
 ]
+

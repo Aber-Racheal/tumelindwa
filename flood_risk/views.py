@@ -7,83 +7,145 @@ from rest_framework import status
 from .models import FloodRisk
 from .serializers import FloodRiskSerializer
 
+
 class FloodRiskPredictionView(APIView):
     def post(self, request):
-        # Extract data from the request
         location = request.data.get('location')
         risk_percentage = request.data.get('risk_percentage')
         soil_type = request.data.get('soil_type')
         elevation = request.data.get('elevation')
 
-        # Validate that all required fields are provided
-        if not all([location, risk_percentage, soil_type, elevation]):
-            return Response({"error": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Validate risk_percentage to ensure it's a non-negative number
-        try:
-            risk_percentage = float(risk_percentage)
-            if risk_percentage < 0:
-                return Response({"error": "Risk percentage must be a non-negative value."}, status=status.HTTP_400_BAD_REQUEST)
-        except ValueError:
-            return Response({"error": "Risk percentage must be a valid number."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Normalize the location to title case for consistency
+        missing_fields = []
+        if not location:
+            missing_fields.append("location")
+        if not risk_percentage:
+            missing_fields.append("risk_percentage")
+        if not soil_type:
+            missing_fields.append("soil_type")
+        if not elevation:
+                missing_fields.append("elevation")
+     
+        if missing_fields:
+            return Response({"error": f"Missing fields: {', '.join(missing_fields)}"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        
+        if not isinstance(risk_percentage, dict):
+            return Response({"error": "Risk percentage must be a valid JSON object."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        for season, value in risk_percentage.items():
+            if not isinstance(value, (int, float)):
+                return Response({"error": f"Risk percentage for {season} must be a number."}, status=status.HTTP_400_BAD_REQUEST)
+            if value < 0:
+                return Response({"error": f"Risk percentage for {season} must be a non-negative value."}, status=status.HTTP_400_BAD_REQUEST)
+        
         location = location.title()
+       
 
-        # Check for existing flood risk data using a case-insensitive query
         existing_flood_risk = FloodRisk.objects.filter(location__iexact=location).first()
         if existing_flood_risk:
-            # If the location exists, update the existing record with new data
             existing_flood_risk.risk_percentage = risk_percentage
             existing_flood_risk.soil_type = soil_type
             existing_flood_risk.elevation = elevation
-            existing_flood_risk.save()  # Save changes to the database
+            existing_flood_risk.save() 
             return Response({"message": "Flood risk data updated successfully"}, status=status.HTTP_200_OK)
+       
+        try:
+            flood_risk = FloodRisk.objects.create(
+                location=location,
+                risk_percentage=risk_percentage,
+                soil_type=soil_type,
+                elevation=elevation
+            )
 
-        # If the location does not exist, create a new FloodRisk instance
-        flood_risk = FloodRisk.objects.create(
-            location=location,
-            risk_percentage=risk_percentage,
-            soil_type=soil_type,
-            elevation=elevation
-        )
+            seasonal_information = {}
+            for season, risk in risk_percentage.items():
+                risk_category = self.get_risk_category(season, risk)
+                seasonal_information[season] = {
+                     "risk_category": risk_category['category'],
+                     "additional_information": risk_category['message']
+                }
+                
+                serializer = FloodRiskSerializer(flood_risk)
 
-        # Serialize the created instance to include it in the response
-        serializer = FloodRiskSerializer(flood_risk)
 
-        # Return a success message for the creation along with the serialized data
-        return Response({
-            "message": "Flood risk data created successfully",
-            "flood_risk": serializer.data  # Include details of the created FloodRisk instance
-        }, status=status.HTTP_201_CREATED)
+            return Response({
+                "message": "Flood risk data created successfully",
+                "flood_risk": serializer.data,
+                "seasonal_information": seasonal_information
+            }, status=status.HTTP_201_CREATED)
+        
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return Response({"error": "An internal error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+    def get_risk_category(self, season, risk_percentage):
+        seasonal_json_path = os.path.join(settings.BASE_DIR, 'flood_risk', 'risk_messages.json')
+        with open(seasonal_json_path) as f:
+            seasonal_thresholds = json.load(f)
+
+        for threshold in seasonal_thresholds[season]:
+            if risk_percentage <= threshold['max']:
+                return threshold
+        return {"category": "unknown", "message": "Risk level is undetermined."}
+
 
 class FloodRiskView(APIView):
     def get(self, request, location):
-        # Normalize the requested location to title case for retrieval
         location = location.title()
         try:
-            # Attempt to retrieve the FloodRisk instance using a case-insensitive query
             flood_risk = FloodRisk.objects.get(location__iexact=location)
-            serializer = FloodRiskSerializer(flood_risk)  # Serialize the retrieved data
-            data = serializer.data  # Extract serialized data
+            serializer = FloodRiskSerializer(flood_risk) 
+            data = serializer.data  
+            
+            seasonal_json_path = os.path.join(settings.BASE_DIR, 'flood_risk', 'risk_messages.json')
+            with open(seasonal_json_path) as f:
+                seasonal_thresholds = json.load(f)
 
-            # Load risk thresholds from a JSON file for risk categorization
-            json_path = os.path.join(settings.BASE_DIR, 'flood_risk', 'risk_messages.json')
-            with open(json_path) as f:
-                thresholds = json.load(f)['thresholds']
+            risk_messages_json_path = os.path.join(settings.BASE_DIR, 'flood_risk', 'risk_messages.json')
+            with open(risk_messages_json_path) as f:
+                risk_messages = json.load(f)
 
-            # Determine the risk category based on the risk percentage
+            seasonal_information = {}
             risk_percentage = data['risk_percentage']
-            for threshold in thresholds:
-                if risk_percentage <= threshold['max']:
-                    data['risk_category'] = threshold['category']
-                    data['additional_information'] = threshold['additional_information']
-                    break
+            for season, risk in risk_percentage.items():
+                risk_category = self.get_risk_category(season, risk, seasonal_thresholds)
+                seasonal_information[season] = {
+                    "risk_category": risk_category['category'],
+                    "additional_information": risk_category['message']
+                }
 
-            # Add a URL for Google Maps to show the location
+            data['seasonal_information'] = seasonal_information
+
             data['map_url'] = f"https://www.google.com/maps/search/?api=1&query={location}"
             return Response(data)  # Return the data with risk information
-
         except FloodRisk.DoesNotExist:
             # If the location is not found, return a 404 error
             return Response({"error": "Location not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, location):
+        location = location.title()
+        try:
+            flood_risk = FloodRisk.objects.get(location__iexact=location)
+            flood_risk.delete()
+            return Response({"message": "Flood risk data deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except FloodRisk.DoesNotExist:
+            return Response({"error": "Location not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+    def get_risk_category(self, season, risk_percentage, seasonal_thresholds):
+        seasonal_json_path = os.path.join(settings.BASE_DIR, 'flood_risk', 'risk_messages.json')
+        with open(seasonal_json_path) as f:
+            seasonal_thresholds = json.load(f)
+
+        for threshold in seasonal_thresholds[season]:
+            if risk_percentage <= threshold['max']:
+                return threshold
+        return {"category": "unknown", "message": "Risk level is undetermined."}
+
+
+
+

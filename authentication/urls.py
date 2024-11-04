@@ -1,6 +1,5 @@
 from django.urls import path, include
 from . import views
-# from .views import confirm_registration
 urlpatterns = [
     path("", views.index, name="index"),
     path("login/", views.login, name="login"),

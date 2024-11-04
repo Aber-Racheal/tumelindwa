@@ -129,7 +129,7 @@ def confirm_registration_view(request, uidb64, token):
         user.is_active = True  
         user.save()
         messages.success(request, 'Your email has been confirmed. You can now log in.')
-        return redirect('login') 
+        return redirect('https://landvista-dashboard.vercel.app/dashboard')  
     else:
         messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
         return redirect('home')  

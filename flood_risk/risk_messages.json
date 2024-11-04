@@ -1,29 +1,61 @@
 {
-    "thresholds": [
+  "short_rains": [
       {
-        "max": 20,
-        "category": "low",
-        "additional_information": "This area has a low risk of flooding. Generally, minimal precautions are required. However, it’s wise to stay informed about local weather conditions and any potential changes in flood risk. For added peace of mind, ensure your property has proper drainage and monitor any updates from local authorities regarding flood risks."
+          "max": 25,
+          "category": "low",
+          "message": "During the short rainy season, the risk of flooding is low. Minimal precautions are generally required, but it’s wise to stay informed about local weather updates. For added peace of mind, ensure proper drainage around your property and monitor any advisories from local authorities."
       },
       {
-        "max": 40,
-        "category": "moderate",
-        "additional_information": "There is a moderate risk of flooding in this area. It is advisable to take some precautions, such as checking property drainage and being aware of past flood events. Prepare for possible weather changes and stay informed through local news or weather updates. Consider evaluating your property’s vulnerability and any necessary mitigation measures."
+          "max": 50,
+          "category": "moderate",
+          "message": "There is a moderate risk of flooding during the short rains. It’s advisable to take precautions such as checking drainage systems and staying aware of past flood events. Keep an eye on local weather forecasts and consider evaluating your property's flood vulnerability."
       },
       {
-        "max": 60,
-        "category": "high",
-        "additional_information": "This area faces a high risk of flooding. It is crucial to take significant precautions. Ensure that your property is equipped with effective flood defenses and regularly review the flood history of your area. Be prepared with an emergency plan and stay vigilant about weather forecasts and any flood warnings issued by local authorities."
-      },
-      {
-        "max": 80,
-        "category": "very_high",
-        "additional_information": "With very high flood risk in this area, urgent precautions are necessary. Evaluate your property’s flood defenses and consider investing in additional measures to protect against flooding. Stay informed about weather conditions and be ready to act quickly if a flood warning is issued. Ensure you have a comprehensive emergency plan and regularly review it."
-      },
-      {
-        "max": 100,
-        "category": "extreme",
-        "additional_information": "The risk of flooding is extremely high in this area. Immediate action is required to protect yourself and your property. Follow any evacuation orders promptly and ensure you have a robust emergency plan in place. Regularly monitor local advisories and weather conditions, and take all necessary steps to safeguard your property from severe flooding."
+          "max": 100,
+          "category": "high",
+          "message": "The risk of flooding during the short rains is high. Significant precautions are necessary. Ensure your property has effective flood defenses in place and stay alert to weather updates and local flood warnings."
+
       }
-    ]
+  ],
+  "long_rains": [
+      {
+          "max": 25,
+          "category": "low",
+          "message": "During the long rainy season, this area experiences a low risk of flooding. Minimal precautions are required, but staying informed about weather changes is recommended. Ensure proper drainage on your property and keep up with local advisories."
+      },
+      {
+          "max": 50,
+          "category": "moderate",
+          "message": "There is a moderate risk of flooding during the long rains. It’s important to take precautions, such as monitoring local forecasts and reviewing your property’s drainage capabilities. Being prepared for potential weather changes is essential."
+      },
+      {
+          "max": 100,
+          "category": "high",
+          "message": "Expect a high risk of flooding during the long rains. It’s crucial to have flood defenses in place and to stay vigilant about weather conditions. Review your emergency plan and be prepared to act on any flood warnings issued by local authorities."
+      }
+  ],
+  "long_dry_season": [
+      {
+          "max": 25,
+          "category": "very low",
+          "message": "During the long dry season, the risk of flooding is very low. Minimal precautions are required, but it’s still advisable to stay informed about local weather changes. Ensure your property has adequate drainage to handle unexpected rainfall."
+      },
+      {
+          "max": 50,
+          "category": "moderate",
+          "message": "There is a moderate risk of flooding during the long dry season. General preparedness is advised, including monitoring weather forecasts and ensuring proper drainage around your property."
+      }
+  ],
+  "short_dry_season": [
+      {
+          "max": 10,
+          "category": "very low",
+          "message": "During the short dry season, the flooding risk is very low. Minimal precautions are typically sufficient, but staying informed about any potential weather changes is advisable."
+      },
+      {
+          "max": 30,
+          "category": "low",
+          "message": "The risk of flooding during the short dry season is low. Basic preparedness is recommended, including staying updated on weather conditions and ensuring proper drainage around your property."
+      }
+  ]
 }
