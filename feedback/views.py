@@ -66,8 +66,6 @@ class QuestionResponseView(views.APIView):
             question = Question.objects.get(id=question_id)
         except Question.DoesNotExist:
             return Response({'error': 'Question not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # Count responses directly linked to the question object
         positive = Feedback.objects.filter(question=question, response='yes').count()
         negative = Feedback.objects.filter(question=question, response='no').count()
 

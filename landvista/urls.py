@@ -22,7 +22,7 @@ urlpatterns = [
     path ('api/', include('location.urls')),
     path ('api/', include('feedback.urls')),
     path('auth/', include ('authentication.urls')),
-      path('api/', include('flood_risk.urls')),
+    path('api/', include('flood_risk.urls')),
     path('api/', include('users.urls')),
-
 ]
+
