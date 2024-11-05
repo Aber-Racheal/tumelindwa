@@ -1,4 +1,3 @@
-import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -68,6 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'landvista.wsgi.application'
 
+import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL')
