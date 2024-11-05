@@ -1,4 +1,3 @@
-import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -68,6 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'landvista.wsgi.application'
 
+import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv('DATABASE_URL')
@@ -120,4 +120,5 @@ EMAIL_PORT=int(os.getenv('EMAIL_PORT',587))
 EMAIL_USE_TLS=os.getenv('EMAIL_USE_TLS','True')=='True'
 EMAIL_HOST_USER=os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD=os.getenv('EMAIL_HOST_PASSWORD', '')
+BASE_URL = os.getenv('BASE_URL')
 

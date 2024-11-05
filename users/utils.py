@@ -36,7 +36,8 @@ def send_email(subject, to_email, context, template_name='email_templates.html')
 def generate_confirmation_link(user, request):
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    base_url = os.getenv('CONFIRMATION_BASE_URL', 'https://default-url.com')  
+    base_url = settings.BASE_URL  
     confirmation_url = f"{base_url}/confirm-registration/{uid}/{token}/"
     return confirmation_url
+
 
